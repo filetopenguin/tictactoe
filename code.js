@@ -1,63 +1,104 @@
-function createPlayer(name){
-    return {name};
-}
-
-
-const game = (()=>{
-
+const gameboard = (() => {
     let board = [];
+
+    const createBoard = () => {
+        board = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+    };
+
+    const getBoard = () => board;
+
+    const setCell = (i, j, value) => {
+        if (board[i][j] === 0) {
+            board[i][j] = value;
+            return true; // success
+        }
+        return false; // Cell already taken
+    };
+
+    return { createBoard, getBoard, setCell };
+})();
+
+
+
+const displayController = (() => {
+    const boardList = document.querySelector(".board-list");
+
+    const displayBoard = (board) => {
+        boardList.innerHTML =''; //clear board
+
+        board.forEach(row => {
+            const rowDiv = document.createElement('div');//seperate each row with a div
+
+            row.forEach(element=>{
+                var tile = document.createElement('li');
+                switch(element){
+                    case 1:
+                        element = 'X'
+                    case 2:
+                        element = 'O';
+                    default:
+                        element ='';
+                }
+                tile.innerText = element;
+                rowDiv.appendChild(tile);
+            })
+            boardList.appendChild(rowDiv);
+        });
+        console.log("\n");
+    };
+
+    const displayMessage = (message) => {
+        console.log(message);
+    };
+
+    return { displayBoard, displayMessage };
+})();
+
+
+
+
+const game = (() => {
     let currentPlayer = 1;
 
-     function createBoard() {
-        board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-    }
-
-    function play(i, j) {
-        if (board[i][j] === 0) { // Check if the cell is empty
-            board[i][j] = currentPlayer;
-            displayBoard();
-
-             if (checkWin()) {
-                console.log(`Player ${currentPlayer} wins!`);
-                resetGame(); // Reset board and player
+    const play = (i, j) => {
+        if (gameboard.setCell(i, j, currentPlayer)) {
+            displayController.displayBoard(gameboard.getBoard());
+            if (checkWin()) {
+                displayController.displayMessage(`Player ${currentPlayer} wins!`);
+                resetGame();
             } else if (isTie()) {
-                console.log("It's a tie!");
+                displayController.displayMessage("It's a tie!");
                 resetGame();
             } else {
                 currentPlayer = currentPlayer === 1 ? 2 : 1; // Switch player
             }
         } else {
-            console.log("Cell already taken!");
+            displayController.displayMessage("Cell already taken!");
         }
-    }
+    };
 
+    const checkWin = () => {
+        const board = gameboard.getBoard();
 
-
-    function displayBoard() {
-        for (let i = 0; i < board.length; i++) {
-            console.log(board[i].join(" | "));
-        }
-        console.log("\n");
-    }
-
-
-
-    function checkWin() {
-        // Check rows
+        // check rows
         for (let i = 0; i < board.length; i++) {
             if (board[i][0] === currentPlayer && board[i][1] === currentPlayer && board[i][2] === currentPlayer) {
                 return true;
             }
         }
 
-        // Check columns
-        for (let j = 0; j < board.length; j++) {
+        // Ccck columns
+        for (let j = 0; j < board[0].length; j++) {
             if (board[0][j] === currentPlayer && board[1][j] === currentPlayer && board[2][j] === currentPlayer) {
                 return true;
             }
         }
 
-        // Check diagonals
+        // check diagonals
         if (board[0][0] === currentPlayer && board[1][1] === currentPlayer && board[2][2] === currentPlayer) {
             return true;
         }
@@ -65,22 +106,27 @@ const game = (()=>{
             return true;
         }
 
-        return false; // No win found
-    }
-    function isTie() {
-        return board.every(row => row.every(cell => cell !== 0));
-    }
-
-    function resetGame() {
-        createBoard();
-        currentPlayer = 1; // Reset to Player 1 for a new game
-    }
-
-    createBoard();
-    return{
-        play
+        return false;
     };
 
+    const isTie = () => {
+        const board = gameboard.getBoard();
+        return board.every(row => row.every(cell => cell !== 0));
+    };
+
+    const resetGame = () => {
+        gameboard.createBoard();
+        currentPlayer = 1;
+        displayController.displayBoard(gameboard.getBoard());
+    };
+
+    const start = () => {
+        gameboard.createBoard();
+        displayController.displayBoard(gameboard.getBoard());
+    };
+
+    return { play, start };
 })();
 
-game();
+window.game = game;
+game.start();
