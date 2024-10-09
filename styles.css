@@ -1,21 +1,66 @@
-li {
-    list-style-type: none; 
-    padding-left: 0; 
-    display: inline-block;
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    text-align: center;
-    line-height: 30px;
-    margin: 2px;
-}
-div {
-    margin-bottom: 5px; 
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
 }
 
-.board-display{
-    position: absolute;
-    top: 50%;
-    left: 50%;    
-    transform: translate(-50%, -50%); 
+.header {
+    margin-bottom: 20px;
+}
+
+.board-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board-list {
+    list-style-type: none;
+    padding: 0;
+    display: inline-block;
+}
+
+.board-list div {
+    display: flex;
+}
+
+li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none; 
+    padding: 0;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #333;
+    margin: 5px;
+    font-size: 2em;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+li:hover {
+    background-color: #e0e0e0; 
+}
+
+.msg-display {
+    margin-top: 10px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #666;
+}
+.winning-line {
+    background-color: rgba(36, 236, 9, 0.5); 
+    border: 2px solid green; 
 }
